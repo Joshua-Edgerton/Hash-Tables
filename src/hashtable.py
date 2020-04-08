@@ -54,7 +54,28 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+
+        # Makes a key value pair off of input key and value
+        pair = LinkedPair(key, value)
+        # Sets the index by using the hash method on the entered key
+        index = self._hash_mod(key)
+
+        # If a key exists in that index
+        if self.storage[index]:
+            # The next node is set to that index
+            pair.next = self.storage[index]
+            # And that index equals the key/value pair
+            self.storage[index] = pair
+            # And current_pair also equals that index
+            current_pair = self.storage[index]
+            # While "current pair" exists
+            while current_pair:
+                # "current pair" equals its next node
+                current_pair = current_pair.next
+        # Else if there is no other key that exists in that index
+        else:
+            # Set that index in storage to equal that pair
+            self.storage[index] = pair
 
 
 
@@ -66,7 +87,34 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # Hashed key for the index
+        index = self._hash_mod(key)
+        # The item in storage with that index
+        item = self.storage[index]
+
+        # If item exists
+        if item:
+            # If it is part of a linked list, loop through the pairs, until you find the matching "key"
+            if item.next:
+                # Set "current pair" to that item
+                current_pair = item
+                
+                # While "current pair" exists
+                while current_pair:
+                    # If the key within that pair is the same as the input key
+                    if current_pair.key == key:
+                        # That item in storage
+                        item = current_pair.next
+                        # Equals None
+                        current_pair.next = None
+                    # Cycle through
+                    current_pair = current_pair.next
+            else:
+                # That index in storage equals None
+                self.storage[index] = None
+        # Else input key doesn't exist
+        else:
+            print("That item does not exist")
 
 
     def retrieve(self, key):
@@ -77,7 +125,32 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # Hashed input key
+        index = self._hash_mod(key)
+        # The value of the pair with that index
+        item = self.storage[index]
+        # If the current item exists
+        if item:
+            # If that key/value pairs key is equal to the input key
+            if item.key == key:
+                # Return that pairs value
+                return item.value
+            # Else if there is multiple pairs stored at the index, loop through them, and find the one requested
+            elif item.next:
+                # "Current pair" equals that key/value
+                current_pair = item
+                # While that key/value exists
+                while current_pair:
+                    # If that key equals the input key
+                    if current_pair.key == key:
+                        # Return that pairs value
+                        return current_pair.value
+                    # Cycle through remaining pairs
+                    current_pair = current_pair.next
+        # Else 
+        else:
+            # Return None
+            return None
 
 
     def resize(self):
@@ -87,7 +160,24 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # Times the existing capacity by 2
+        self.capacity *= 2
+        # "Old storage" equals the existing storage
+        old_storage = self.storage
+        # Add an empty place for each capacity
+        self.storage = [None] * self.capacity
+
+        # For each pair in the "Old Storage"
+        for pair in old_storage:
+            # Current Pair" equals that pair
+            current_pair = pair
+            
+            # While that pair exists
+            while current_pair:
+                # Insert that key/value pair
+                self.insert(current_pair.key, current_pair.value)
+                # Cycle through existing pairs
+                current_pair = current_pair.next 
 
 
 
